@@ -1,0 +1,53 @@
+DROP TABLE IF EXISTS BookAuthors, Loans, Books, Authors, Members, Staff;
+
+CREATE TABLE Books (
+    BookID INT AUTO_INCREMENT PRIMARY KEY,
+    Title VARCHAR(255) NOT NULL,
+    ISBN VARCHAR(13) UNIQUE NOT NULL,
+    Publisher VARCHAR(100),
+    YearPublished INT,
+    CopiesAvailable INT DEFAULT 1 CHECK (CopiesAvailable >= 0)
+);
+
+CREATE TABLE Authors (
+    AuthorID INT AUTO_INCREMENT PRIMARY KEY,
+    FirstName VARCHAR(100) NOT NULL,
+    LastName VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE BookAuthors (
+    BookID INT,
+    AuthorID INT,
+    PRIMARY KEY (BookID, AuthorID),
+    FOREIGN KEY (BookID) REFERENCES Books(BookID) ON DELETE CASCADE,
+    FOREIGN KEY (AuthorID) REFERENCES Authors(AuthorID) ON DELETE CASCADE
+);
+
+CREATE TABLE Members (
+    MemberID INT AUTO_INCREMENT PRIMARY KEY,
+    FirstName VARCHAR(100) NOT NULL,
+    LastName VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Phone VARCHAR(15),
+    JoinDate DATE DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE Staff (
+    StaffID INT AUTO_INCREMENT PRIMARY KEY,
+    FirstName VARCHAR(100) NOT NULL,
+    LastName VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Role VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Loans (
+    LoanID INT AUTO_INCREMENT PRIMARY KEY,
+    BookID INT NOT NULL,
+    MemberID INT NOT NULL,
+    StaffID INT NOT NULL,
+    LoanDate DATE DEFAULT CURRENT_DATE,
+    ReturnDate DATE,
+    FOREIGN KEY (BookID) REFERENCES Books(BookID),
+    FOREIGN KEY (MemberID) REFERENCES Members(MemberID),
+    FOREIGN KEY (StaffID) REFERENCES Staff(StaffID)
+);
